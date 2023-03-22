@@ -11,14 +11,6 @@ import { ChatState } from "../Context/ChatProvider";
 
 const ChatPage = () => {
   const [fetchAgain,setFetchAgain]=useState(false);
-//   const [chats, setChats] = useState([])
-//   const fetchChats=async()=>{
-//   const {data}=await axios.get("/api/chat");
-//   setChats(data);
-// };
-// useEffect(()=>{
-//   fetchChats();
-// },[]);
   const {user}= ChatState();
 
   return (

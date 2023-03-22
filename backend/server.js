@@ -73,10 +73,14 @@ io.on("connection", (socket) => {
     chat.users.forEach((user) => {
       if (user._id == newMessageRecieved.sender._id) return;
       socket.in(user._id).emit("message recieved", newMessageRecieved);
-    });
+    });1
   });
   socket.off("setup", () => {
     console.log("USER DISCONNECTED");
     socket.leave(userData._id);
   });
 });
+
+
+
+// "build":"NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"

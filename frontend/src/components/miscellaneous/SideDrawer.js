@@ -1,25 +1,21 @@
-import { Button } from "@chakra-ui/button";
-import { useDisclosure } from "@chakra-ui/react";
+import { Button, IconButton } from "@chakra-ui/button";
+import { useDisclosure, Icon, Image } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/input";
-import { Box, Text } from "@chakra-ui/layout";
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList
-} from "@chakra-ui/menu";
+import { Box, Link, Text } from "@chakra-ui/layout";
+import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
 import {
   Drawer,
   DrawerBody,
   DrawerContent,
-  DrawerOverlay
+  DrawerOverlay,
 } from "@chakra-ui/modal";
+import meetImg from "../../meet.png";
 import { Tooltip } from "@chakra-ui/tooltip";
-import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import { Avatar } from "@chakra-ui/avatar";  
+import { BellIcon, CalendarIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { Avatar } from "@chakra-ui/avatar";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";   
+import axios from "axios";
 import { useToast } from "@chakra-ui/toast";
 import ChatLoading from "../ChatLoading";
 import { Spinner } from "@chakra-ui/spinner";
@@ -31,18 +27,17 @@ import { ChatState } from "../../Context/ChatProvider";
 import ProfileModal from "./ProfileModal";
 import { getSender } from "../../config/ChatLogics";
 
-const SideDrawer=()=>{
-    const [search, setSearch] = useState("");
-    const [searchResult, setSearchResult] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [loadingChat, setLoadingChat] = useState(false);
+const SideDrawer = () => {
+  const [search, setSearch] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingChat, setLoadingChat] = useState(false);
 
-
-// function SideDrawer() {
-//   const [search, setSearch] = useState("");
-//   const [searchResult, setSearchResult] = useState([]);
-//   const [loading, setLoading] = useState(false);
-//   const [loadingChat, setLoadingChat] = useState(false);
+  // function SideDrawer() {
+  //   const [search, setSearch] = useState("");
+  //   const [searchResult, setSearchResult] = useState([]);
+  //   const [loading, setLoading] = useState(false);
+  //   const [loadingChat, setLoadingChat] = useState(false);
 
   const {
     setSelectedChat,
@@ -50,18 +45,18 @@ const SideDrawer=()=>{
     notification,
     setNotification,
     chats,
-    setChats
+    setChats,
   } = ChatState();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
   const history = useHistory();
-  
+
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
     history.push("/");
   };
-  
-  const toast = useToast();  
+
+  const toast = useToast();
 
   const handleSearch = async () => {
     if (!search) {
@@ -101,7 +96,7 @@ const SideDrawer=()=>{
   };
 
   const accessChat = async (userId) => {
-//     console.log(userId);
+    //     console.log(userId);
 
     try {
       setLoadingChat(true);
@@ -142,22 +137,51 @@ const SideDrawer=()=>{
         // borderWidth="1px"
       >
         <Tooltip>
-          <Button background={"transparent"} _hover={{bgColor:"rgba(0,0,0,0.1)"}} 
-          onClick={onOpen}
+          <Button
+            background={"transparent"}
+            _hover={{ bgColor: "rgba(0,0,0,0.1)" }}
+            onClick={onOpen}
           >
             <i className="fas fa-search"></i>
-            <Text color={"RGBA(0, 0, 0, 1)"} fontSize={17} fontFamily="poppins" display={{ base: "none", md: "flex",lg:"inline" }} px={2}>
+            <Text
+              color={"RGBA(0, 0, 0, 1)"}
+              fontSize={17}
+              fontFamily="poppins"
+              display={{ base: "none", md: "flex", lg: "inline" }}
+              px={2}
+            >
               Search User
             </Text>
           </Button>
         </Tooltip>
         <Box>
-        <Text as={"span"} fontSize="3xl" fontWeight={1000} fontFamily="Satisfy">
-          Pri
-          <Text as="span" color={"white"}>V</Text>y
-        </Text>
+          <Text
+            as={"span"}
+            fontSize="3xl"
+            fontWeight={1000}
+            fontFamily="Satisfy"
+          >
+            Pri
+            <Text as="span" color={"white"}>
+              V
+            </Text>
+            y
+          </Text>
         </Box>
         <div>
+          <Link
+            padding={1}
+            marginRight={"3px"}
+            marginTop={"6px"}
+            fontSize="2xl"
+            href="https://privy-676869-meet.onrender.com"
+            isExternal
+            //  border={"1px solid white"}
+            display={"flex"}
+            float={"left"}
+          >
+            <Image width={"28px"} src={meetImg} />
+          </Link>
           <Menu>
             <MenuButton p={1}>
               <NotificationBadge
@@ -166,76 +190,118 @@ const SideDrawer=()=>{
               />
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
-            <MenuList pl={2}> 
-               {!notification.length && "No new messages."}
-               {notification.map(notif=>(
-                 <MenuItem key={notif._id} 
-                    onClick={()=>{setSelectedChat(notif.chat);
-                    setNotification(notification.filter((n)=>n!==notif));}}
-                 >  
-                   {notif.chat.isGroupChat
-                      ? `New message in ${notif.chat.chatName}`
-                      : `New message from ${getSender(user,notif.chat.users)}`}
-                 </MenuItem>
-               ))}
+            <MenuList pl={2}>
+              {!notification.length && "No new messages."}
+              {notification.map((notif) => (
+                <MenuItem
+                  key={notif._id}
+                  onClick={() => {
+                    setSelectedChat(notif.chat);
+                    setNotification(notification.filter((n) => n !== notif));
+                  }}
+                >
+                  {notif.chat.isGroupChat
+                    ? `New message in ${notif.chat.chatName}`
+                    : `New message from ${getSender(user, notif.chat.users)}`}
+                </MenuItem>
+              ))}
             </MenuList>
           </Menu>
           <Menu color="white" backgroundColor={"rgba(0,0,0,0.8)"}>
-            <MenuButton background={"transparent"} as={Button} rightIcon={<ChevronDownIcon mt={2}/>}
-            _hover={{ bgColor:"rgba(0, 0, 0, 0.1)"}} variant="unstyled"
-            padding={"0px 10px"} margin={"0px"}
+            <MenuButton
+              background={"transparent"}
+              as={Button}
+              rightIcon={<ChevronDownIcon mt={2} />}
+              _hover={{ bgColor: "rgba(0, 0, 0, 0.1)" }}
+              variant="unstyled"
+              padding={"0px 10px"}
+              margin={"0px"}
             >
-              <Avatar size="sm" cursor="pointer" name={user.name} src={user.pic}/>
+              <Avatar
+                size="sm"
+                cursor="pointer"
+                name={user.name}
+                src={user.pic}
+              />
             </MenuButton>
-            <MenuList color="white" backgroundColor={"rgba(0,0,0,0.8)"} pl={2} pr={2} border="none" lineHeight="28px">
+            <MenuList
+              color="white"
+              backgroundColor={"rgba(0,0,0,0.8)"}
+              pl={2}
+              pr={2}
+              border="none"
+              lineHeight="28px"
+            >
               <ProfileModal user={user}>
-                <MenuItem bg={"transparent"} borderRadius="3px" _hover={{background:"RGBA(0, 176, 179,0.3)"}} border="none">My Profile</MenuItem>
+                <MenuItem
+                  bg={"transparent"}
+                  borderRadius="3px"
+                  _hover={{ background: "RGBA(0, 176, 179,0.3)" }}
+                  border="none"
+                >
+                  My Profile
+                </MenuItem>
               </ProfileModal>
-              <MenuItem bg={"transparent"} borderRadius="3px" _hover={{background:"RGBA(255, 0, 0, 0.3)"}} border="none" onClick={logoutHandler}>Log Out</MenuItem>
+              <MenuItem
+                bg={"transparent"}
+                borderRadius="3px"
+                _hover={{ background: "RGBA(255, 0, 0, 0.3)" }}
+                border="none"
+                onClick={logoutHandler}
+              >
+                Log Out
+              </MenuItem>
             </MenuList>
           </Menu>
         </div>
       </Box>
 
-      <Drawer placement='left' onClose={onClose} fontFamily="poppins" isOpen={isOpen }>
-        <DrawerOverlay/>
-        <DrawerContent fontFamily={"poppins"} color="white" backgroundColor={"rgba(0,0,0,0.8)"}>
+      <Drawer
+        placement="left"
+        onClose={onClose}
+        fontFamily="poppins"
+        isOpen={isOpen}
+      >
+        <DrawerOverlay />
+        <DrawerContent
+          fontFamily={"poppins"}
+          color="white"
+          backgroundColor={"rgba(0,0,0,0.8)"}
+        >
           {/* <DrawerHeader  marginBottom="7px" >Search Users</DrawerHeader> */}
-        <DrawerBody>
-          
-          <Box display={"flex"} pt={3} pb={5}>
-            <Input
-              placeholder="Name or email"
-              mr={2}
-              ml={0}
-              value={search}
-              borderStyle="none"
-              background={"transparent"}
-              variant="flushed"
-              focusBorderColor="purple.500"
-              onChange={(e)=>setSearch(e.target.value)}
+          <DrawerBody>
+            <Box display={"flex"} pt={3} pb={5}>
+              <Input
+                placeholder="Name or email"
+                mr={2}
+                ml={0}
+                value={search}
+                borderStyle="none"
+                background={"transparent"}
+                variant="flushed"
+                focusBorderColor="purple.500"
+                onChange={(e) => setSearch(e.target.value)}
               />
-            <Button 
-            onClick={handleSearch} colorScheme="purple"
-            >Go</Button> 
-          </Box>
-          
-          {loading?(
-             <ChatLoading/>
-          ):(
-            searchResult?.map(user=>(
-              <UserListItem
-                key={user._id}
-                user={user}
-                handleFunction={()=>accessChat(user._id)}
-              />
-            ))
-          )}
-          {loadingChat && <Spinner ml={"auto"} display={"flex"}/>}
-        </DrawerBody>
+              <Button onClick={handleSearch} colorScheme="purple">
+                Go
+              </Button>
+            </Box>
+
+            {loading ? (
+              <ChatLoading />
+            ) : (
+              searchResult?.map((user) => (
+                <UserListItem
+                  key={user._id}
+                  user={user}
+                  handleFunction={() => accessChat(user._id)}
+                />
+              ))
+            )}
+            {loadingChat && <Spinner ml={"auto"} display={"flex"} />}
+          </DrawerBody>
         </DrawerContent>
       </Drawer>
-
     </>
   );
 };
