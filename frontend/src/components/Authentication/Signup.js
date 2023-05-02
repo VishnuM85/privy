@@ -105,6 +105,7 @@ const Signup = () => {
 
       setLoading(false);
       history.push("/chats");
+      window.location.reload();
     } catch (error) {
       toast({
         title: "Error occured",
